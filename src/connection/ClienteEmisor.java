@@ -1,4 +1,4 @@
-package coonnection;
+package connection;
 
 import java.io.*;
 import java.net.*;
