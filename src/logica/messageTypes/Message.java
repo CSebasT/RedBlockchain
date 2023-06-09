@@ -1,4 +1,4 @@
-package MessageTypes;
+package logica.messageTypes;
 
 import java.util.ArrayList;
 import java.util.List;

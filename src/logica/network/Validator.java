@@ -1,4 +1,4 @@
-package Network;
+package logica.network;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,10 +9,14 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 /**
- * Clase ValidatorMonoType.
+ * Clase Validator.
  */
-public class ValidatorMonoType implements Runnable {
-    
+public class Validator implements Runnable {
+
+    /**
+     * Probabilidad de escoger un blockchain lógico y otro.
+     */
+    double probaV = 0;
     /**
      * Variable sin uso.
      */
@@ -26,17 +30,27 @@ public class ValidatorMonoType implements Runnable {
      */
     private final Network network;
     /**
-     * ValidatorNode asociado.
+     * Validador heredado de un nodo full.
      */
     private ValidatorNode validator = null;
+    /**
+     * Variable sin uso.
+     */
+    private int incremBlock = 0;
+    /**
+     * Variable sin uso.
+     */
+    private int testIncrement = 0;
 
     /**
-     * Constructor ValidatorMonoType.
+     * Constructor Validator.
      * 
      * @param network Red a la que pertenece.
+     * @param proba Probabilidad de .
      */
-    public ValidatorMonoType(Network network) {
+    public Validator(Network network, double proba) {
         this.network = network;
+        this.probaV = proba;
     }
 
     /**
@@ -52,11 +66,11 @@ public class ValidatorMonoType implements Runnable {
             if (node instanceof ValidatorNode) { // If found node is an ValidatorNode
                 double stakeAmount;
                 if (ID.equals(network.TYPE1)) {
-                    stakeAmount = ((ValidatorNode) node).getStakeAmount1(); 
+                    stakeAmount = ((ValidatorNode) node).getStakeAmount1(); // Monto de apuesta del ValidatorNode 
                 } else {
-                    stakeAmount = ((ValidatorNode) node).getStakeAmount2(); 
+                    stakeAmount = ((ValidatorNode) node).getStakeAmount2();
                 }
-                double stakeTime = System.currentTimeMillis() - ((ValidatorNode) node).getStakeTime(); // Get LightNode's stakeTime (How long the node have been Staking)
+                double stakeTime = System.currentTimeMillis() - ((ValidatorNode) node).getStakeTime(); // StakeTime de ValidatorNode (cuánto tiempo ha estado apostando el nodo)
                 mapProba.put((ValidatorNode) node, stakeAmount * (stakeTime));
             }
         }
@@ -64,12 +78,12 @@ public class ValidatorMonoType implements Runnable {
         int number_of_slots = 0;
         for (Node node : listNode) {
             if (node instanceof ValidatorNode) {
-                number_of_slots += (mapProba.get(node) / sum) * 10;
+                number_of_slots += (mapProba.get(node) / sum) * 10; //10?
             }
         }
         System.out.println("Slots : " + number_of_slots);
         int node_slots;
-        List<ValidatorNode> validatorNodesSlots = new ArrayList<>(number_of_slots);
+        List<ValidatorNode> validatorNodesSlots = new ArrayList<>(number_of_slots); 
         for (int j = 0; j < number_of_slots; j++)
             validatorNodesSlots.add(null);
         for (Node node : listNode) {
@@ -101,16 +115,18 @@ public class ValidatorMonoType implements Runnable {
 
     /**
      * Método que manda al ValidatorNode a crear un nuevo bloque y escoge el siguiente ValidatorNode.
-     * Siempre se utiliza el primer blockchain lógico.
      */
     public void validate() {
-        String currentBlockType = "";
+        int currentIDChosen = 0;
         boolean interrupt = false;
         while (!interrupt) {
             lock.lock();
             try {
-                if (validator != null) {
-                    validator.forgeBlock(currentBlockType);
+                if (validator != null) { // Se manda a crear el bloque
+                    if (currentIDChosen == 1)
+                        validator.forgeBlock(this.network.TYPE1);
+                    if (currentIDChosen == 2)
+                        validator.forgeBlock(this.network.TYPE2);
                     validator = null;
 
                 }
@@ -121,8 +137,36 @@ public class ValidatorMonoType implements Runnable {
                         break;
                     }
                 }
-                currentBlockType = network.TYPE1;
-                chooseValidator(network.TYPE1);
+
+                HashMap<String, Integer> nbTransParType = (HashMap<String, Integer>) network.getNbTransParType();
+                int nbSum = (int) nbTransParType.values().stream().collect(Collectors.summarizingInt(Integer::intValue)).getSum(); //?
+                double proba;
+                if (probaV!=0){
+                    proba = probaV; //?
+                }else{
+                    proba = (double) nbTransParType.get(network.TYPE1) / nbSum; // Porbabilidad basada en el número de transacciones de cada blockchain lógico.
+                }
+                network.T1.add(nbTransParType.get(network.TYPE1)); // Se actualizan las transacciones en la lista por blockchain lógico.
+                network.T2.add(nbTransParType.get(network.TYPE2));
+                System.out.println("Transactions : " +  "["+nbTransParType.get(network.TYPE1)+","+nbTransParType.get(network.TYPE2)+"]");
+                if (proba > 0.95) proba = 0.95;
+                if (proba < 0.05) proba = 0.05;
+                currentIDChosen = (Math.random() < proba ? 1 : 2); // Proba is between 0.95 and 0.05
+                network.PT1.add(proba*100);
+                network.PT2.add(100-proba*100); // Parentesis?
+
+                System.out.println("T1-Probability is  " + proba*100 + " %");
+                System.out.println("T2-Probability is " + (100-proba*100) + " %");
+                //MOD
+
+                // Se escoge el nodo que va a crear el bloque.
+                if (currentIDChosen == 1) {
+                    network.ELECTED.add(1);
+                    chooseValidator(network.TYPE1);
+                } else {
+                    network.ELECTED.add(2);
+                    chooseValidator(network.TYPE2);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 interrupt = true;

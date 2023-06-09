@@ -1,10 +1,10 @@
-package Blockchain;
-
-import Network.Network;
+package logica.blockchain;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import logica.network.Network;
 
 /**
  * Clase Blockchain.

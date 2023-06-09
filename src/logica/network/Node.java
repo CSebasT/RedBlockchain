@@ -1,11 +1,11 @@
-package Network;
+package logica.network;
 
-import Blockchain.Block;
-import Blockchain.Blockchain;
-import MessageTypes.Message;
-import MessageTypes.Transaction;
-import Utils.HashUtil;
-import Utils.RsaUtil;
+import logica.blockchain.Block;
+import logica.blockchain.Blockchain;
+import logica.messageTypes.Message;
+import logica.messageTypes.Transaction;
+import logica.utils.HashUtil;
+import logica.utils.RsaUtil;
 
 import java.security.KeyPair;
 import java.security.PrivateKey;

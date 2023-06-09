@@ -1,9 +1,9 @@
-package Network;
+package logica.network;
 
-import Blockchain.Block;
-import Blockchain.Blockchain;
-import MessageTypes.Message;
-import MessageTypes.Transaction;
+import logica.blockchain.Block;
+import logica.blockchain.Blockchain;
+import logica.messageTypes.Message;
+import logica.messageTypes.Transaction;
 
 import java.security.PublicKey;
 import java.util.*;
@@ -284,8 +284,8 @@ public class Network {
             associatedLightNode = network.get(++i);
         }
 
-        if (associatedLightNode instanceof PoS.LightNode)
-            ((PoS.LightNode) associatedLightNode).receiptCoin(amount, currency);
+        if (associatedLightNode instanceof logica.pos.LightNode)
+            ((logica.pos.LightNode) associatedLightNode).receiptCoin(amount, currency);
     }
 
     /**
@@ -295,7 +295,7 @@ public class Network {
      */
     public Blockchain copyBlockchainFromFN() {
         for (Node node : network) {
-            if (node instanceof PoS.FullNode) {
+            if (node instanceof logica.pos.FullNode) {
                 return node.getBlockchain();
             }
         }
@@ -326,7 +326,7 @@ public class Network {
      */
     public void printWallets() {
         for (var node : network) {
-            if (node instanceof PoS.LightNode) {
+            if (node instanceof logica.pos.LightNode) {
                 //System.out.println("Nom client : " + node.name + " \nWallet 1 : " + ((PoS.LightNode) node).getWallet(TYPE1) + "\n" + "Wallet 2 : " + ((PoS.LightNode) node).getWallet(TYPE2));
             }
         }

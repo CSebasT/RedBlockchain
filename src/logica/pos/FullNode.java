@@ -1,9 +1,9 @@
-package PoS;
+package logica.pos;
 
-import Blockchain.Block;
-import Blockchain.Blockchain;
-import Network.Network;
-import Network.Node;
+import logica.blockchain.Block;
+import logica.blockchain.Blockchain;
+import logica.network.Network;
+import logica.network.Node;
 
 /**
  * Clase FullNode extending Node.

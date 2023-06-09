@@ -1,13 +1,13 @@
-package PoS;
+package logica.pos;
 
-import Blockchain.Block;
-import Blockchain.Blockchain;
-import MessageTypes.Transaction;
-import Network.Network;
-import Network.ValidatorNode;
-import Network.ValidatorParaL;
-import Network.Validator;
-import Network.ValidatorMonoType;
+import logica.blockchain.Block;
+import logica.blockchain.Blockchain;
+import logica.messageTypes.Transaction;
+import logica.network.Network;
+import logica.network.Validator;
+import logica.network.ValidatorMonoType;
+import logica.network.ValidatorNode;
+import logica.network.ValidatorParaL;
 
 import java.io.File;
 import java.io.FileNotFoundException;

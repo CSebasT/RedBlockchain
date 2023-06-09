@@ -1,7 +1,7 @@
-package Blockchain;
+package logica.blockchain;
 
-import MessageTypes.Transaction;
-import Utils.HashUtil;
+import logica.messageTypes.Transaction;
+import logica.utils.HashUtil;
 
 import java.util.ArrayList;
 import java.util.List;

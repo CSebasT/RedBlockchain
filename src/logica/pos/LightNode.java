@@ -1,14 +1,14 @@
-package PoS;
+package logica.pos;
 
-import Blockchain.Block;
-import Blockchain.Blockchain;
-import Blockchain.LightBlockChain;
-import MessageTypes.Message;
-import MessageTypes.Transaction;
-import Network.Network;
-import Network.Node;
-import Network.ValidatorNode;
-import Utils.RsaUtil;
+import logica.blockchain.Block;
+import logica.blockchain.Blockchain;
+import logica.blockchain.LightBlockChain;
+import logica.messageTypes.Message;
+import logica.messageTypes.Transaction;
+import logica.network.Network;
+import logica.network.Node;
+import logica.network.ValidatorNode;
+import logica.utils.RsaUtil;
 
 import java.util.HashMap;
 

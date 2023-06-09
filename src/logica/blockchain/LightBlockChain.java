@@ -1,8 +1,8 @@
-package Blockchain;
-
-import Network.Network;
+package logica.blockchain;
 
 import java.util.ArrayList;
+
+import logica.network.Network;
 
 /**
  * Clase LightBlockChain.

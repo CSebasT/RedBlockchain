@@ -1,4 +1,4 @@
-package Network;
+package logica.network;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,17 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
 
 /**
- * Clase Validator.
+ * Clase ValidatorParaL.
  */
-public class Validator implements Runnable {
-
-    /**
-     * Probabilidad de escoger un blockchain lógico y otro.
-     */
-    double probaV = 0;
+public class ValidatorParaL implements Runnable {
+    
     /**
      * Variable sin uso.
      */
@@ -30,27 +25,21 @@ public class Validator implements Runnable {
      */
     private final Network network;
     /**
-     * Validador heredado de un nodo full.
+     * ValidatorNode asociado al primer blockchain lógico.
      */
-    private ValidatorNode validator = null;
+    private ValidatorNode validator1 = null;
     /**
-     * Variable sin uso.
+     * ValidatorNode asociado al segundo blockchain lógico.
      */
-    private int incremBlock = 0;
-    /**
-     * Variable sin uso.
-     */
-    private int testIncrement = 0;
+    private ValidatorNode validator2 = null;
 
     /**
-     * Constructor Validator.
+     * Constructor ValidatorParaL.
      * 
      * @param network Red a la que pertenece.
-     * @param proba Probabilidad de .
      */
-    public Validator(Network network, double proba) {
+    public ValidatorParaL(Network network) {
         this.network = network;
-        this.probaV = proba;
     }
 
     /**
@@ -66,11 +55,11 @@ public class Validator implements Runnable {
             if (node instanceof ValidatorNode) { // If found node is an ValidatorNode
                 double stakeAmount;
                 if (ID.equals(network.TYPE1)) {
-                    stakeAmount = ((ValidatorNode) node).getStakeAmount1(); // Monto de apuesta del ValidatorNode 
+                    stakeAmount = ((ValidatorNode) node).getStakeAmount1();
                 } else {
-                    stakeAmount = ((ValidatorNode) node).getStakeAmount2();
+                    stakeAmount = ((ValidatorNode) node).getStakeAmount2(); 
                 }
-                double stakeTime = System.currentTimeMillis() - ((ValidatorNode) node).getStakeTime(); // StakeTime de ValidatorNode (cuánto tiempo ha estado apostando el nodo)
+                double stakeTime = System.currentTimeMillis() - ((ValidatorNode) node).getStakeTime(); // Get LightNode's stakeTime (How long the node have been Staking)
                 mapProba.put((ValidatorNode) node, stakeAmount * (stakeTime));
             }
         }
@@ -78,12 +67,12 @@ public class Validator implements Runnable {
         int number_of_slots = 0;
         for (Node node : listNode) {
             if (node instanceof ValidatorNode) {
-                number_of_slots += (mapProba.get(node) / sum) * 10; //10?
+                number_of_slots += (mapProba.get(node) / sum) * 10;
             }
         }
         System.out.println("Slots : " + number_of_slots);
         int node_slots;
-        List<ValidatorNode> validatorNodesSlots = new ArrayList<>(number_of_slots); 
+        List<ValidatorNode> validatorNodesSlots = new ArrayList<>(number_of_slots);
         for (int j = 0; j < number_of_slots; j++)
             validatorNodesSlots.add(null);
         for (Node node : listNode) {
@@ -109,26 +98,34 @@ public class Validator implements Runnable {
             return;
 
         int chosen_node_index = (int) (Math.random() * number_of_slots);
-        validator = validatorNodesSlots.get(chosen_node_index);
-        System.out.println(validator.name + " is chosen");
+        if(ID.equals(network.TYPE1)){
+            validator1 = validatorNodesSlots.get(chosen_node_index);
+            System.out.println(validator1.name + " is chosen");
+        }
+        else {
+            validator2 = validatorNodesSlots.get(chosen_node_index);
+            System.out.println(validator2.name + " is chosen");
+        }
+
+
     }
 
     /**
-     * Método que manda al ValidatorNode a crear un nuevo bloque y escoge el siguiente ValidatorNode.
+     * Método que manda a los ValidatorNode a crear un nuevo bloque para cada blockchain
+     * y escoge los siguientes ValidatorNode.
      */
     public void validate() {
-        int currentIDChosen = 0;
         boolean interrupt = false;
         while (!interrupt) {
             lock.lock();
             try {
-                if (validator != null) { // Se manda a crear el bloque
-                    if (currentIDChosen == 1)
-                        validator.forgeBlock(this.network.TYPE1);
-                    if (currentIDChosen == 2)
-                        validator.forgeBlock(this.network.TYPE2);
-                    validator = null;
-
+                if (validator1 != null && validator2 != null) {
+                    validator1.forgeBlock(network.TYPE1);
+                    validator2.forgeBlock(network.TYPE2);
+                    System.out.println(validator1);
+                    System.out.println(validator2);
+                    validator1 = null;
+                    validator2 = null;
                 }
                 long start = System.currentTimeMillis();
                 while (true) {
@@ -137,36 +134,8 @@ public class Validator implements Runnable {
                         break;
                     }
                 }
-
-                HashMap<String, Integer> nbTransParType = (HashMap<String, Integer>) network.getNbTransParType();
-                int nbSum = (int) nbTransParType.values().stream().collect(Collectors.summarizingInt(Integer::intValue)).getSum(); //?
-                double proba;
-                if (probaV!=0){
-                    proba = probaV; //?
-                }else{
-                    proba = (double) nbTransParType.get(network.TYPE1) / nbSum; // Porbabilidad basada en el número de transacciones de cada blockchain lógico.
-                }
-                network.T1.add(nbTransParType.get(network.TYPE1)); // Se actualizan las transacciones en la lista por blockchain lógico.
-                network.T2.add(nbTransParType.get(network.TYPE2));
-                System.out.println("Transactions : " +  "["+nbTransParType.get(network.TYPE1)+","+nbTransParType.get(network.TYPE2)+"]");
-                if (proba > 0.95) proba = 0.95;
-                if (proba < 0.05) proba = 0.05;
-                currentIDChosen = (Math.random() < proba ? 1 : 2); // Proba is between 0.95 and 0.05
-                network.PT1.add(proba*100);
-                network.PT2.add(100-proba*100); // Parentesis?
-
-                System.out.println("T1-Probability is  " + proba*100 + " %");
-                System.out.println("T2-Probability is " + (100-proba*100) + " %");
-                //MOD
-
-                // Se escoge el nodo que va a crear el bloque.
-                if (currentIDChosen == 1) {
-                    network.ELECTED.add(1);
-                    chooseValidator(network.TYPE1);
-                } else {
-                    network.ELECTED.add(2);
-                    chooseValidator(network.TYPE2);
-                }
+                chooseValidator(network.TYPE1);
+                chooseValidator(network.TYPE2);
             } catch (Exception e) {
                 e.printStackTrace();
                 interrupt = true;

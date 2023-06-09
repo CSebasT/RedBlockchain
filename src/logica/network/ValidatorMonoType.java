@@ -1,4 +1,4 @@
-package Network;
+package logica.network;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,11 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 /**
- * Clase ValidatorParaL.
+ * Clase ValidatorMonoType.
  */
-public class ValidatorParaL implements Runnable {
+public class ValidatorMonoType implements Runnable {
     
     /**
      * Variable sin uso.
@@ -25,20 +26,16 @@ public class ValidatorParaL implements Runnable {
      */
     private final Network network;
     /**
-     * ValidatorNode asociado al primer blockchain lógico.
+     * ValidatorNode asociado.
      */
-    private ValidatorNode validator1 = null;
-    /**
-     * ValidatorNode asociado al segundo blockchain lógico.
-     */
-    private ValidatorNode validator2 = null;
+    private ValidatorNode validator = null;
 
     /**
-     * Constructor ValidatorParaL.
+     * Constructor ValidatorMonoType.
      * 
      * @param network Red a la que pertenece.
      */
-    public ValidatorParaL(Network network) {
+    public ValidatorMonoType(Network network) {
         this.network = network;
     }
 
@@ -55,7 +52,7 @@ public class ValidatorParaL implements Runnable {
             if (node instanceof ValidatorNode) { // If found node is an ValidatorNode
                 double stakeAmount;
                 if (ID.equals(network.TYPE1)) {
-                    stakeAmount = ((ValidatorNode) node).getStakeAmount1();
+                    stakeAmount = ((ValidatorNode) node).getStakeAmount1(); 
                 } else {
                     stakeAmount = ((ValidatorNode) node).getStakeAmount2(); 
                 }
@@ -98,34 +95,24 @@ public class ValidatorParaL implements Runnable {
             return;
 
         int chosen_node_index = (int) (Math.random() * number_of_slots);
-        if(ID.equals(network.TYPE1)){
-            validator1 = validatorNodesSlots.get(chosen_node_index);
-            System.out.println(validator1.name + " is chosen");
-        }
-        else {
-            validator2 = validatorNodesSlots.get(chosen_node_index);
-            System.out.println(validator2.name + " is chosen");
-        }
-
-
+        validator = validatorNodesSlots.get(chosen_node_index);
+        System.out.println(validator.name + " is chosen");
     }
 
     /**
-     * Método que manda a los ValidatorNode a crear un nuevo bloque para cada blockchain
-     * y escoge los siguientes ValidatorNode.
+     * Método que manda al ValidatorNode a crear un nuevo bloque y escoge el siguiente ValidatorNode.
+     * Siempre se utiliza el primer blockchain lógico.
      */
     public void validate() {
+        String currentBlockType = "";
         boolean interrupt = false;
         while (!interrupt) {
             lock.lock();
             try {
-                if (validator1 != null && validator2 != null) {
-                    validator1.forgeBlock(network.TYPE1);
-                    validator2.forgeBlock(network.TYPE2);
-                    System.out.println(validator1);
-                    System.out.println(validator2);
-                    validator1 = null;
-                    validator2 = null;
+                if (validator != null) {
+                    validator.forgeBlock(currentBlockType);
+                    validator = null;
+
                 }
                 long start = System.currentTimeMillis();
                 while (true) {
@@ -134,8 +121,8 @@ public class ValidatorParaL implements Runnable {
                         break;
                     }
                 }
+                currentBlockType = network.TYPE1;
                 chooseValidator(network.TYPE1);
-                chooseValidator(network.TYPE2);
             } catch (Exception e) {
                 e.printStackTrace();
                 interrupt = true;

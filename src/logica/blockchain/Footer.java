@@ -1,4 +1,4 @@
-package Blockchain;
+package logica.blockchain;
 
 /**
  * Clase Footer.

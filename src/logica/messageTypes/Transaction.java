@@ -1,9 +1,9 @@
-package MessageTypes;
-
-import Utils.HashUtil;
-import Utils.RsaUtil;
+package logica.messageTypes;
 
 import java.security.PrivateKey;
+
+import logica.utils.HashUtil;
+import logica.utils.RsaUtil;
 
 /**
  * Clase Transaction.
