@@ -269,7 +269,6 @@ public class Network {
         updateWalletWithAddress(totalFee, b.getNodeAddress(), b.getBlockID()); //Actualización de la billetera del minero
     }
 
-
     /**
      * Método para actualizar la billetera del cliente con su dirección.
      *
