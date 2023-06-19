@@ -23,13 +23,6 @@ public class Entrada extends Thread {
                 ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
                 Message message = (Message)in.readObject();
                 in.close();
-                // billetera.wallet1 += cantidadRecibida;
-                // System.out.println("Recibido" + billetera.wallet1);
-                // BufferedWriter archivo = new BufferedWriter(new FileWriter("mensajes.txt",
-                // true));
-                // archivo.write(objeto.toString());
-                // archivo.newLine();
-                // archivo.close();
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }

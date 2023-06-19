@@ -10,6 +10,8 @@ public class Test {
         String host = "26.92.40.65";
         int puertoEnvio = 12346;
         int puertoRecepcion = 12345;
+
+
         /*
          * Enviar a Jorge
          * String host = "26.92.40.65";
@@ -22,12 +24,21 @@ public class Test {
 
         int cantidadEnviada = 300;
 
+        Salida salida = new Salida();
+
+
         //Hilo para escuchar
         Entrada serverThread = new Entrada(puertoRecepcion);
         serverThread.start();
         
         //Genera transaccion
-        nodo.sendMoneyTo(cantidadEnviada, host, "Bit1");
+        //nodo.sendMoneyTo(cantidadEnviada, host, "Bit1");
+        //Enviar dinero al nodo
+        salida.sendMoneyTo(cantidadEnviada,host,puertoEnvio);
+
+        //Iniciar el hilo para escuchar respuesta del nodo
+        Entrada entrada = new Entrada(puertoRecepcion);
+        entrada.start();
 
         //Run de validador ParaL
         nodo.validate();

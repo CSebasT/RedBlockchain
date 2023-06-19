@@ -34,6 +34,9 @@ public class Salida {
             BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             out.writeInt(cantidadEnviada);
+            //El dinero se envia inmediatamente al nodo receptor
+            out.flush();
+            System.out.println("Cantidad enviada" + cantidadEnviada);
         } catch (IOException e) {
             e.printStackTrace();
         }
