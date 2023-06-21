@@ -24,6 +24,7 @@ public class ValidatorNode extends logica.pos.FullNode {
      */
     public static double INVEST_RATE = 0.80;
     /**
+     * No se usa
      * Nodo ligero asociado.
      */
     public final LightNode fullNodeAccount;
@@ -61,7 +62,7 @@ public class ValidatorNode extends logica.pos.FullNode {
      *
      * @param nom Nombre del ValidatorNode.
      * @param network Red.
-     * @param fullNodeAccount Nodo ligero asociado.
+     * @param fullNodeAccount Nodo ligero asociado. No se usa
      */
     public ValidatorNode(String nom, Network network, LightNode fullNodeAccount) {
         super(nom, network);
@@ -158,7 +159,7 @@ public class ValidatorNode extends logica.pos.FullNode {
     }
 
     /**
-     * Método que obtiene y envía la recompensa.
+     * Método que obtiene y envía la recompensa. No se usa
      * 
      * @param amount Monto.
      * @param id Identificador del blockchain lógico.
@@ -229,12 +230,13 @@ public class ValidatorNode extends logica.pos.FullNode {
             this.investorList1.put(investorAddress, stakeAmount);
             this.stakeAmount1 += stakeAmount;
         } else {
-            this.investorList2.remove(investorAddress, stakeAmount);
+            this.investorList2.remove(investorAddress, stakeAmount); //Deberia ser put
             this.stakeAmount2 += stakeAmount;
         }
     }
 
     /**
+     * No se usa
      * Método que elimina un inversor de la lista de inversores de un determinado blockchain lógico.
      * 
      * @param investorAddress Dirección del inversor.

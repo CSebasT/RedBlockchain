@@ -1,5 +1,6 @@
 package logicaDistribuida.blockchain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -7,7 +8,7 @@ import java.util.Objects;
 import logicaDistribuida.utils.HashUtil;
 import logicaDistribuida.messageTypes.Transaction;
 
-public class Block {
+public class Block  implements Serializable{
     /**
      * Header del bloque.
      */

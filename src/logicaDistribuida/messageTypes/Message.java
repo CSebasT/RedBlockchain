@@ -1,12 +1,13 @@
 package logicaDistribuida.messageTypes;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Clase Message.
  */
-public class Message {
+public class Message implements Serializable{
 
     /**
      * Dirección del emisor del mensaje.

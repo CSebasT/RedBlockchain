@@ -41,7 +41,7 @@ public class test {
         FullNode s3 = new FullNode("Paris Server", net);
         FullNode s4 = new FullNode("England Server", net);
 
-        // Validator Wallet
+        // Validator Wallet - No se usan internamente
         LightNode wvn1 = new LightNode("Validator wallet1", net);
         LightNode wvn2 = new LightNode("Validator wallet2", net);
         LightNode wvn3 = new LightNode("Validator wallet3", net);
@@ -85,7 +85,7 @@ public class test {
         vn5.addInvestorType(ln5.getNodeAddress(), ln5.getStakeAmount1(), TYPE1);
         vn6.addInvestorType(ln6.getNodeAddress(), ln6.getStakeAmount1(), TYPE1);
 
-        vn1.addInvestorType(ln1.getNodeAddress(), ln1.getStakeAmount1(), TYPE2);
+        vn1.addInvestorType(ln1.getNodeAddress(), ln1.getStakeAmount1(), TYPE2); //ln1.getStakeAmount2()?
         vn2.addInvestorType(ln2.getNodeAddress(), ln2.getStakeAmount1(), TYPE2);
         vn3.addInvestorType(ln3.getNodeAddress(), ln3.getStakeAmount1(), TYPE2);
         vn4.addInvestorType(ln4.getNodeAddress(), ln4.getStakeAmount1(), TYPE2);

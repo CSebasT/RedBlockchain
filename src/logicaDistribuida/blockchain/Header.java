@@ -1,11 +1,12 @@
 package logicaDistribuida.blockchain;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * Clase Header.
  */
-public class Header {
+public class Header  implements Serializable{
 
     /**
      * Hash del header del último bloque físico.

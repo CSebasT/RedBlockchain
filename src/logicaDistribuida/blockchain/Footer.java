@@ -1,9 +1,11 @@
 package logicaDistribuida.blockchain;
 
+import java.io.Serializable;
+
 /**
  * Clase Footer.
  */
-public class Footer {
+public class Footer  implements Serializable{
 
     /**
      * Hash del Footer.

@@ -1,12 +1,13 @@
 package logicaDistribuida.blockchain;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import logica.network.Network;
 
-public class Blockchain {
+public class Blockchain  implements Serializable{
 
     /**
      * Utilizado para la sincronización (hilos).

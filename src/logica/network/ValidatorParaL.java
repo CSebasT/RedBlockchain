@@ -106,8 +106,6 @@ public class ValidatorParaL implements Runnable {
             validator2 = validatorNodesSlots.get(chosen_node_index);
             System.out.println(validator2.name + " is chosen");
         }
-
-
     }
 
     /**

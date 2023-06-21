@@ -2,6 +2,9 @@ package logicaDistribuida.connection;
 
 import java.io.*;
 import java.net.*;
+import java.security.PublicKey;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -10,57 +13,63 @@ import logicaDistribuida.nodo.Nodo;
 import logicaDistribuida.messageTypes.Transaction;
 import logica.network.ValidatorNode;
 import logicaDistribuida.messageTypes.Message;
-import logicaDistribuida.nodo.Nodo;
 import logicaDistribuida.blockchain.Block;
 
 public class Salida {
-    private String host = "26.92.40.65";
-    private int puertoEnvio = 12346;
-    /**
-     * Algoritmo de consenso.
-     */
+    private Nodo miNodo;
+    private String host;
+    private int puertoEnvio;
+    private HashMap<String, Integer> direcciones = new HashMap<>();
     public String mode = "POS";
 
-    public Salida() {
-    }
-
-    public void sendMoneyTo(int cantidadEnviada, String host, int puertoEnvio) {
-        this.host = host;
-        this.puertoEnvio = puertoEnvio;
-        Socket socket;
-        try {
-            socket = new Socket(host, puertoEnvio);
-            System.out.println("Coneccion iniciada");
-            BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-            out.writeInt(cantidadEnviada);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public Salida(Nodo miNodo) {
+        this.miNodo = miNodo;
+        /* Nodo 1 */
+        direcciones.put("26.20.111.124", 12341);
+        /* Nodo 2 */
+        direcciones.put("26.92.40.65", 12342);
+        /* Nodo 3 */
+        // direcciones.put("", 12343));
     }
 
     public void broadcastMessage(Message m) {
-        // Para toda la red
-        Nodo nodo = new Nodo(2, "26.92.40.65");
-        nodo.receiptMessage(m);
+        System.out.println("Broadcasting");
+        direcciones.forEach((d, p) -> enviarMensaje(d, p, m));
         if (m.getType() == 1) {
             // this.copyBlockchainFromFN().printBlk();
             Block block;
             try {
-                block = copyBlockchainFromFN().getLatestBlock(); // TODO: Obtiene el bloque de un full nodo.
+                block = (Block) m.getMessageContent().get(0); // copyBlockchainFromFN().getLatestBlock(); TODO: Obtiene
+                                                              // el bloque de un full nodo.
                 if (!block.getNodeAddress().equals("Master"))
-                    updateAllWallet(block);
+                    updateAllWallet(block)
+                    ;
             } catch (NullPointerException ignored) {
             }
         }
     }
 
-    public Blockchain copyBlockchainFromFN() {
-        // Consultar a la red a al mismo nodo por una copia del blockchain
-        // NO se instancia, se pide al nodo del Test o a la red.
-        Nodo nodo = new Nodo(2, "26.92.40.65");
-        return nodo.getBlockchain();
-        // throw new NullPointerException();
+    private void enviarMensaje(String d, Integer p, Message m) {
+        this.host = d;
+        this.puertoEnvio = p;
+        Socket socket;
+        if (!miNodo.getNodeAddress().equals(host)) {
+            try {
+                socket = new Socket("localhost", puertoEnvio);
+                System.out.println("Conexion iniciada (mensaje)");
+                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+                out.writeObject(m);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            miNodo.receiptMessage(m);
+        }
+
+    }
+
+    public void copyBlockchainFromFN() {
+
     }
 
     /**
@@ -71,7 +80,7 @@ public class Salida {
     private void updateAllWallet(Block b) {
         double totalFee = 0;
         List<Transaction> t = b.getTransaction();
-        Nodo vn = null; // Validator node, Hay que separar el nodo y el nodo validador
+        Nodo vn = null;
         if (mode.equals("POS")) {
             // Busqueda del nodo que minó el bloque.
             // for (Nodo n : network) {
@@ -123,36 +132,82 @@ public class Salida {
      *
      * @param amount        Monto de la transacción.
      * @param clientAddress Dirección del beneficiario.
-     * @param currency      Identificador de la transacción.
+     * @param type          Identificador de la transacción.
      */
-    public void updateWalletWithAddress(double amount, String clientAddress, String currency) {
-        //TODO: Buscar cliente con la dirección clientAddress 
-        //associatedLightNode.receiptCoin(amount, currency);
+    public void updateWalletWithAddress(double amount, String clientAddress, String type) {
+        this.host = clientAddress;
+        this.puertoEnvio = direcciones.get(clientAddress);
+        Socket socket;
+        if (!miNodo.getNodeAddress().equals(host)) {
+            try {
+                socket = new Socket("localhost", puertoEnvio);
+                System.out.println("Conexion iniciada (mensaje)");
+                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+                if (type.equals("Type1")) {
+                    out.writeObject("ActBilleteraType1"+amount);
+                } else {
+                    out.writeObject("ActBilleteraType2"+amount);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println(amount);
+            miNodo.receiptCoin(amount, type);
+        }
+
     }
 
-    /*
-     * try
-     * 
-     * {
-     * Socket socket = new Socket(host, puertoEnvio);
-     * System.out.println("Coneccion iniciada");
-     * BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-     * ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-     * // out.writeObject();
-     * // Envio de 300 dolares
-     * if (billetera.wallet1 - cantidadEnviada * (1 + billetera.TRANSACTION_FEE) <
-     * 0) {
-     * System.out.println(" Not enough currency of type " + 1 + " to send");
-     * System.out.println("Rejected transaction");
-     * return;
-     * }
-     * billetera.wallet1 -= cantidadEnviada * (1 + billetera.TRANSACTION_FEE);
-     * 
-     * }catch(
-     * IOException e)
-     * {
-     * e.printStackTrace();
-     * }
-     */
+    /* Este metodo tambien es un envio con retorno entre salida y entrada */
+    public PublicKey getPkWithAddress(String fromAddress) {
+        this.host = fromAddress;
+        this.puertoEnvio = direcciones.get(fromAddress);
+        Socket socket;
+        try {
+            socket = new Socket(host, puertoEnvio);
+            System.out.println("Conexion-s iniciada");
+            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+            String peticion = "DameTuClavePublica";
+            out.writeObject(peticion);
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
+            // TODO
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void enviarAForjar(String direccionValidador1, String type) {
+        this.host = direccionValidador1;
+        this.puertoEnvio = direcciones.get(direccionValidador1);
+        String peticion = "Forja" + type;
+        Socket socket;
+        if (!miNodo.getNodeAddress().equals(host)) {
+            try {
+                socket = new Socket("localhost", puertoEnvio);
+                System.out.println("Conexion iniciada (forja)");
+                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+                out.writeObject(peticion);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            miNodo.forgeBlock(type);
+        }
+
+    }
+
+    public void actualizarStakeAmount(String direccion, String type) {
+        /* Mandar a consultar */
+        /* En Entrada hacer que se actualice el mapStakeAmount1 del nodo */
+
+    }
+
+    public void actualizarStakeTime(String direccion) {
+        /* Mandar a consultar */
+        /* En Entrada hacer que se actualice el mapStakeTime del nodo */
+
+    }
 }

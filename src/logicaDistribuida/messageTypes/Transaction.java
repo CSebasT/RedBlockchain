@@ -1,5 +1,6 @@
 package logicaDistribuida.messageTypes;
 
+import java.io.Serializable;
 import java.security.PrivateKey;
 
 import logica.utils.HashUtil;
@@ -8,7 +9,7 @@ import logica.utils.RsaUtil;
 /**
  * Clase Transaction.
  */
-public class Transaction {
+public class Transaction implements Serializable{
 
     /**
      * Identificador de la transacción.
