@@ -22,6 +22,7 @@ public class Salida {
     private HashMap<String, Integer> direcciones = new HashMap<>();
     public String mode = "POS";
 
+<<<<<<< HEAD
     public Salida(Nodo miNodo) {
         this.miNodo = miNodo;
         /* Nodo 1 */
@@ -30,6 +31,27 @@ public class Salida {
         direcciones.put("26.92.40.65", 12342);
         /* Nodo 3 */
         // direcciones.put("", 12343));
+=======
+    public Salida() {
+    }
+
+    public void sendMoneyTo(int cantidadEnviada, String host, int puertoEnvio) {
+        this.host = host;
+        this.puertoEnvio = puertoEnvio;
+        Socket socket;
+        try {
+            socket = new Socket(host, puertoEnvio);
+            System.out.println("Coneccion iniciada");
+            BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+            out.writeInt(cantidadEnviada);
+            //El dinero se envia inmediatamente al nodo receptor
+            out.flush();
+            System.out.println("Cantidad enviada" + cantidadEnviada);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+>>>>>>> 073aa7223530f5953fcd17ff01a7ac68ad683810
     }
 
     public void broadcastMessage(Message m) {

@@ -26,6 +26,7 @@ public class Entrada extends Thread {
         while (true) {
             try {
                 Socket socket = serverSocket.accept();
+<<<<<<< HEAD
                 System.out.println("Conexion aceptada");
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
 
@@ -69,6 +70,12 @@ public class Entrada extends Thread {
                 }
 
                 ois.close();
+=======
+                System.out.println("Conexión aceptada");
+                ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+                Message message = (Message)in.readObject();
+                in.close();
+>>>>>>> 073aa7223530f5953fcd17ff01a7ac68ad683810
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
