@@ -27,12 +27,11 @@ public class Salida {
         /* Nodo 1 */
         direcciones.put("26.20.111.124", 12341);
         /* Nodo 2 */
-        direcciones.put("26.92.40.65", 12342);
+        //direcciones.put("26.92.40.65", 12342);
         /* Nodo 3 */
-        // direcciones.put("", 12343));
-    }
-
-    public Salida(logicaDistribuida2.nodo.Nodo nodo) {
+        direcciones.put("26.37.38.157", 12343);
+        /* Nodo 4 */
+        direcciones.put("26.143.218.218", 12344);
     }
 
     public void broadcastMessage(Message m) {
@@ -58,7 +57,7 @@ public class Salida {
         Socket socket;
         if (!miNodo.getNodeAddress().equals(host)) {
             try {
-                socket = new Socket("localhost", puertoEnvio);
+                socket = new Socket(host, puertoEnvio);
                 System.out.println("Conexion iniciada (mensaje)");
                 ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                 out.writeObject(m);
@@ -143,7 +142,7 @@ public class Salida {
         Socket socket;
         if (!miNodo.getNodeAddress().equals(host)) {
             try {
-                socket = new Socket("localhost", puertoEnvio);
+                socket = new Socket(host, puertoEnvio);
                 System.out.println("Conexion iniciada (mensaje)");
                 ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                 if (type.equals("Type1")) {
@@ -189,7 +188,7 @@ public class Salida {
         Socket socket;
         if (!miNodo.getNodeAddress().equals(host)) {
             try {
-                socket = new Socket("localhost", puertoEnvio);
+                socket = new Socket(host, puertoEnvio);
                 System.out.println("Conexion iniciada (forja)");
                 ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                 out.writeObject(peticion);
@@ -213,5 +212,4 @@ public class Salida {
         /* En Entrada hacer que se actualice el mapStakeTime del nodo */
 
     }
-
 }

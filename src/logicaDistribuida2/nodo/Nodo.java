@@ -11,12 +11,12 @@ import java.util.Map;
 import java.util.Set;
 
 import logica.utils.HashUtil;
-import logicaDistribuida.blockchain.Blockchain;
-import logicaDistribuida.blockchain.Block;
-import logicaDistribuida.messageTypes.Message;
-import logicaDistribuida.messageTypes.Transaction;
-import logicaDistribuida.connection.Salida;
-import logicaDistribuida.utils.RsaUtil;
+import logicaDistribuida2.blockchain.Blockchain;
+import logicaDistribuida2.blockchain.Block;
+import logicaDistribuida2.messageTypes.Message;
+import logicaDistribuida2.messageTypes.Transaction;
+import logicaDistribuida2.connection.Salida;
+import logicaDistribuida2.utils.RsaUtil;
 
 public class Nodo {
 

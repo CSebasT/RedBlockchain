@@ -7,7 +7,7 @@ public class Test {
     
     public static void main(String[] args) throws IOException {
         //A donde se va a enviar
-        String host = "26.92.40.65";
+        String host = "26.37.38.157";
         int puertoRecepcion = 12341;
         /*
          * Enviar a Jorge
@@ -34,6 +34,8 @@ public class Test {
         nodo.sendMoneyTo(cantidadEnviada, host, "Type1");
 
         //Run de validador ParaL
+        nodo.validate();
+        nodo.sendMoneyTo(cantidadEnviada, "26.143.218.218", "Type1");
         nodo.validate();
     }
 }

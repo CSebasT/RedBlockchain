@@ -359,9 +359,8 @@ public class Nodo {
 
     public boolean verifyTransaction(Transaction t) throws Exception {
         return true;
-        // TODO: envio multiple al nodo al nodo que generó la transacción
-        // return RsaUtil.verify(t.toString(), t.getSignature(),
-        // salida.getPkWithAddress(t.getFromAddress()));
+        //TODO: envio multiple al nodo al nodo que generó la transacción
+        //return RsaUtil.verify(t.toString(), t.getSignature(), salida.getPkWithAddress(t.getFromAddress()));
     }
 
     public void receiptBlock(Block b, String signature, String nodeAddress, Blockchain blk) {
@@ -389,8 +388,8 @@ public class Nodo {
         //chooseValidator("Type1");
         //chooseValidator("Type2");
         // Asignación momentanea:
-        direccionValidadorType1 = "26.92.40.65";
-        direccionValidadorType2 = "26.20.111.124";
+        direccionValidadorType1 = "26.20.111.124";
+        direccionValidadorType2 = "";
 
         if (direccionValidadorType1 != null && direccionValidadorType2 != null) {
             salida.enviarAForjar(direccionValidadorType1, "Type1");
@@ -412,7 +411,7 @@ public class Nodo {
             double stakeAmount;
             if (type.equals("Type1")) {
                 salida.actualizarStakeAmount(direccion,"Type1");
-                //stakeAmount =  // mapStakeAmount1.get(direccion);
+                //stakeAmount =  mapStakeAmount1.get(direccion);
             } else {
                 //stakeAmount = salida.pedirStakeAmount(direccion,"Type2");
             }

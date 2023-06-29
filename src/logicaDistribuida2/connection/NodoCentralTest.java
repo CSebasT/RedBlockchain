@@ -1,6 +1,6 @@
 package logicaDistribuida2.connection;
 import logica.network.Network;
-import logica.network.NuevoNodoCentral;
+import logicaDistribuida2.nodo.NuevoNodoCentral;
 
 import java.io.IOException;
 

@@ -7,10 +7,10 @@ public class TestNodo2 {
     
     public static void main(String[] args) throws IOException {
         //A donde se va a enviar
-        int puertoRecepcion = 12342;
+        int puertoRecepcion = 12344;
 
         // Mi nodo 
-        Nodo nodo = new Nodo(2, "26.92.40.65");
+        Nodo nodo = new Nodo(4, "26.143.218.218");
 
         int cantidadEnviada = 300;
 

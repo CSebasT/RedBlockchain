@@ -8,12 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import logicaDistribuida.blockchain.Blockchain;
-import logicaDistribuida.nodo.Nodo;
-import logicaDistribuida.messageTypes.Transaction;
+import logicaDistribuida2.blockchain.Blockchain;
+import logicaDistribuida2.nodo.Nodo;
+import logicaDistribuida2.messageTypes.Transaction;
 import logica.network.ValidatorNode;
-import logicaDistribuida.messageTypes.Message;
-import logicaDistribuida.blockchain.Block;
+import logicaDistribuida2.messageTypes.Message;
+import logicaDistribuida2.blockchain.Block;
 
 public class Salida {
     private Nodo miNodo;

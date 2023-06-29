@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import logicaDistribuida.utils.HashUtil;
-import logicaDistribuida.messageTypes.Transaction;
+import logicaDistribuida2.utils.HashUtil;
+import logicaDistribuida2.messageTypes.Transaction;
 
 public class Block  implements Serializable{
     /**

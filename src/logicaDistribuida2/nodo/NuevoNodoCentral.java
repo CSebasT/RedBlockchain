@@ -1,6 +1,8 @@
-package logica.network;
+package logicaDistribuida2.nodo;
 
 import java.util.*;
+
+import logica.network.Network;
 
 /**
  * Clase NodoCentral.
