@@ -16,15 +16,15 @@ public class Network {
 
     /**
      * Dificultad inicial.
-     */
+     **/
     private final static int INIT_DIFFICULTY = 4;
     /**
      * Cambio de dificultad.
-     */
+     **/
     private final static int CHANGE_DIFFICULTY = 50;
     /**
      * Número de bloques del primer blockchain lógico.
-     */
+     **/
     public static List<Integer> NB_OF_BLOCK_OF_TYPE1_CREATED = new ArrayList<>();
     /**
      * Número de bloques del segundo blockchain lógico.
@@ -35,8 +35,8 @@ public class Network {
      */
     public List<Double> ST = new ArrayList<>();
     /**
-     * Lista de las probabilidades  de las trasacciones del primer blockchain lógico.
-     */
+     *Lista de las probabilidades  de las trasacciones del primer blockchain lógico.
+     **/
     public List<Double>  PT1 = new ArrayList<>();
     /**
      * Lista de las probabilidades  de las trasacciones del segundo blockchain lógico.
@@ -305,18 +305,22 @@ public class Network {
      * Método que imprime toda la información de la red.
      */
     public void printStats(){
-        System.out.println("ST="+ ST);
-        System.out.println("NBT1="+NB_OF_BLOCK_OF_TYPE1_CREATED);
-        System.out.println("NBT2="+NB_OF_BLOCK_OF_TYPE2_CREATED);
-        System.out.println("WTT1="+copyBlockchainFromFN().WTT1);
-        System.out.println("WTT2="+copyBlockchainFromFN().WTT2);
-        System.out.println("PT1="+PT1);
-        System.out.println("PT2="+PT2);
-        System.out.println("T1="+T1);
-        System.out.println("T2="+T2);
-        System.out.println("ELECTED="+ELECTED);
-        System.out.println("Type_1_currency_exchanged="+EXCHANGE_MONEY1);
-        System.out.println("Type_2_currency_exchanged="+EXCHANGE_MONEY2);
+        try {
+            System.out.println("ST=" + ST);
+            System.out.println("NBT1=" + NB_OF_BLOCK_OF_TYPE1_CREATED);
+            System.out.println("NBT2=" + NB_OF_BLOCK_OF_TYPE2_CREATED);
+            System.out.println("WTT1=" + copyBlockchainFromFN().WTT1);
+            System.out.println("WTT2=" + copyBlockchainFromFN().WTT2);
+            System.out.println("PT1=" + PT1);
+            System.out.println("PT2=" + PT2);
+            System.out.println("T1=" + T1);
+            System.out.println("T2=" + T2);
+            System.out.println("ELECTED=" + ELECTED);
+            System.out.println("Type_1_currency_exchanged=" + EXCHANGE_MONEY1);
+            System.out.println("Type_2_currency_exchanged=" + EXCHANGE_MONEY2);
+        }catch ( NullPointerException e){
+            System.out.println("Objeto vacio");
+        }
     }
 
 

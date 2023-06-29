@@ -1,4 +1,4 @@
-package logicaDistribuida.connection;
+package logicaDistribuida2.connection;
 
 import java.io.*;
 import java.net.*;
@@ -30,9 +30,6 @@ public class Salida {
         direcciones.put("26.92.40.65", 12342);
         /* Nodo 3 */
         // direcciones.put("", 12343));
-    }
-
-    public Salida(logicaDistribuida2.nodo.Nodo nodo) {
     }
 
     public void broadcastMessage(Message m) {
@@ -213,5 +210,4 @@ public class Salida {
         /* En Entrada hacer que se actualice el mapStakeTime del nodo */
 
     }
-
 }
