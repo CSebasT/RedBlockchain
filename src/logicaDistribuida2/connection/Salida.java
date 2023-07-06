@@ -29,11 +29,13 @@ public class Salida {
         /* Nodo 1 */
         direcciones.put("26.20.111.124", 12341);
         /* Nodo 2 */
-        // direcciones.put("26.92.40.65", 12342);
+        direcciones.put("26.92.40.65", 12342);
         /* Nodo 3 */
         direcciones.put("26.37.38.157", 12343);
         /* Nodo 4 */
         direcciones.put("26.143.218.218", 12344);
+        /* Nodo 5 */
+        direcciones.put("26.194.104.185", 12345);
     }
 
     public void broadcastMessage(Message m) {

@@ -6,11 +6,12 @@ import java.security.KeyPair;
 import logicaDistribuida2.nodo.Nodo;
 import logicaDistribuida2.utils.RsaUtil;
 
-public class Test {
+public class TestNodo4 {
     
     public static void main(String[] args) throws IOException {
-        int puertoRecepcion = 12341;
-        
+        //A donde se va a enviar
+        int puertoRecepcion = 12344;
+
         KeyPair keys = null;
         try {
             keys = RsaUtil.generateKeyPair();
@@ -19,24 +20,20 @@ public class Test {
         }
 
         // Mi nodo 
-        // La dirección en "logica" se obtiene de un hash a la clave publica
-        Nodo nodo = new Nodo(1, "26.20.111.124", keys);
+        Nodo nodo = new Nodo(4, "26.143.218.218", keys);
         // Poner el stake
-        nodo.stake(20, "Type1");
-        nodo.stake(10, "Type2");
+        nodo.stake(9, "Type1");
+        nodo.stake(6, "Type2");
         nodo.addInvestorType(nodo.getNodeAddress(), nodo.getStakeAmount1(), "Type1"); //ln1.getNodeAddress(), ln1.getStakeAmount1(), TYPE1
         nodo.addInvestorType(nodo.getNodeAddress(), nodo.getStakeAmount1(), "Type2"); 
-       
+
         int cantidadEnviada = 300;
+
         //Hilo para escuchar
         Entrada serverThread = new Entrada(nodo, puertoRecepcion);
         serverThread.start();
-
-        nodo.buscarInfoRed();
         
-        //Genera transaccion
-        nodo.sendMoneyTo(cantidadEnviada, "26.37.38.157", "Type1");
-        nodo.sendMoneyTo(cantidadEnviada, "26.143.218.218", "Type2");
-        nodo.validate();//Run de validador ParaL
+        nodo.buscarInfoRed();
     }
+    
 }
