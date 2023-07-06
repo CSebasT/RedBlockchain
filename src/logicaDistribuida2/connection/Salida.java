@@ -59,7 +59,7 @@ public class Salida {
         System.out.println("Envio de Mensaje a " + host);
         if (!miNodo.getNodeAddress().equals(host)) {
             try {
-                socket = new Socket("localhost", puertoEnvio);
+                socket = new Socket(host, puertoEnvio);
                 System.out.println("Conexion iniciada");
                 ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                 out.writeObject(m);
@@ -153,7 +153,7 @@ public class Salida {
         System.out.println("Envio de peticion (actualización de billetera) a " + host);
         if (!miNodo.getNodeAddress().equals(host)) {
             try {
-                socket = new Socket("localhost", puertoEnvio);
+                socket = new Socket(host, puertoEnvio);
                 System.out.println("Conexion iniciada");
                 ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                 if (type.equals("Type1")) {
@@ -180,7 +180,7 @@ public class Salida {
         System.out.println("Envio de petición (Forja " + type + ") a " + host);
         if (!miNodo.getNodeAddress().equals(host)) {
             try {
-                socket = new Socket("localhost", puertoEnvio);
+                socket = new Socket(host, puertoEnvio);
                 System.out.println("Conexion iniciada");
                 ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                 out.writeObject(peticion);
@@ -235,7 +235,7 @@ public class Salida {
         System.out.println("Envio de información del nodo a " + host);
         if (!miNodo.getNodeAddress().equals(host)) {
             try {
-                socket = new Socket("localhost", puertoEnvio);
+                socket = new Socket(host, puertoEnvio);
                 System.out.println("Conexion iniciada");
                 ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                 out.writeObject(clavePublica);
@@ -261,7 +261,7 @@ public class Salida {
             System.out.println("Envío de peticion (Pedir copia de InfoRed) a " + host);
             if (!miNodo.getNodeAddress().equals(host)) {
                 try {
-                    socket = new Socket("localhost", puertoEnvio);
+                    socket = new Socket(host, puertoEnvio);
                     System.out.println("Conexion iniciada");
                     ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                     out.writeObject("InfoRed" + miNodo.getNodeAddress());
@@ -289,7 +289,7 @@ public class Salida {
         System.out.println("Envio de copia InfoRed a " + host);
         if (!miNodo.getNodeAddress().equals(host)) {
             try {
-                socket = new Socket("localhost", puertoEnvio);
+                socket = new Socket(host, puertoEnvio);
                 System.out.println("Conexion iniciada");
                 ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                 out.writeObject(infoRed);
@@ -315,7 +315,7 @@ public class Salida {
         System.out.println("Envío de petición (Actualización NbTransParType) a " + host);
         if (!miNodo.getNodeAddress().equals(host)) {
             try {
-                socket = new Socket("localhost", puertoEnvio);
+                socket = new Socket(host, puertoEnvio);
                 System.out.println("Conexion iniciada");
                 ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                 if (transactionType.equals("Type1")) {
