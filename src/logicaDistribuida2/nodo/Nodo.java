@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import logica.network.Network;
 import logica.utils.HashUtil;
 import logicaDistribuida2.blockchain.Blockchain;
 import logicaDistribuida2.blockchain.Block;
@@ -79,7 +80,7 @@ public class Nodo {
     /**
      * Fecha de la última apuesta.
      */
-    public double stakeTime;
+    public long stakeTime;
 
     /* Validator Node */
     /**
@@ -107,7 +108,7 @@ public class Nodo {
      */
     private final Map<String, Double> investorList2 = new HashMap<>();
 
-     /**
+    /**
      * Estructura con ip y puerto
      */
     private String direccionValidadorType1 = null;
@@ -134,7 +135,7 @@ public class Nodo {
         this.name = Integer.toString(id);
     }
 
-    public void buscarInfoRed(){
+    public void buscarInfoRed() {
         salida.buscarInfoRed();
     }
 
@@ -164,13 +165,14 @@ public class Nodo {
         System.out.println("Mensaje creado");
         salida.broadcastMessage(m);
         // contar el número de transacciones por tipo
-        salida.broadcastNbTransParType(transactionType);
+        salida.broadcastNbTransParType(transactionType,1);
     }
 
     public void receiptCoin(double amount, String type) {
         System.out.println("Cantidad recibida: " + amount);
         wallet1 += amount;
         System.out.println("Nuevo valor: " + wallet1);
+        // TODO: Broadcast para InfoRed, actualización de las wallets
     }
 
     public void receiptMessage(Message message) {
@@ -201,7 +203,12 @@ public class Nodo {
         }
         if (transactionStatus) {
             pendingTransaction.add(t);
+            System.out.println();
+            System.out.println("///-----------------------------------///");
+            System.out.println("Información de la transacción recibida:");
             System.out.println(t);
+            System.out.println("///-----------------------------------///");
+            System.out.println();
         } else {
             fraudulentTransaction.add(t);
         }
@@ -217,9 +224,15 @@ public class Nodo {
             if (true) { // RsaUtil.verify(HashUtil.SHA256(b.toString()), signature,
                         // network.getPkWithAddress(nodeAddress))
                 this.blockchain.addBlock(b);
+                System.out.println();
+                System.out.println("///-----------------------------------///");
+                System.out.println("Información del bloque recibido:");
                 System.out.println(b);
                 System.out.println(b.getTransaction());
+                System.out.println("///-----------------------------------///");
+                System.out.println();
             }
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -233,23 +246,25 @@ public class Nodo {
     }
 
     public void forgeBlock(String type) {
+        System.out.println();
+        System.out.println("---------------------------------------------------");
         List<Transaction> inBlockTransaction = new ArrayList<>();
         for (int i = 0; (i < MAX_TRANSACTION) && (i < pendingTransaction.size()); i++) {
             if (pendingTransaction.get(i).getTransactionID().equals(type)) {
                 inBlockTransaction.add(pendingTransaction.get(i));
-                // network.setNbTransParType(type, network.getNbTransParType().get(type) -
-                // 1);**********
+                System.out.println(pendingTransaction.get(i).getTransactionID());
+                salida.broadcastNbTransParType(type,-1);
             }
         }
         long start = System.nanoTime();
-        Block prevBlockID = this.blockchain.searchPrevBlockByID(type, this.blockchain.getSize() - 1); //
+        Block prevBlockID = this.blockchain.searchPrevBlockByID(type, this.blockchain.getSize() - 1);
         long end = System.nanoTime();
-        // network.ST.add((double) end - start);**************
+        // TODO: Broadcast
+        //network.ST.add((double) end - start);
         Block forgedBlock = new Block(this.blockchain.getLatestBlock(), prevBlockID, inBlockTransaction, type);
         forgedBlock.setNodeID(this.nodeID);
         forgedBlock.setNodeAddress(this.nodeAddress);
         System.out.println("Block has been forged by " + this.name);
-        System.out.println("---------------------------------------------------");
         try {
             List<Object> messageContent = new ArrayList<>();
             messageContent.add(forgedBlock);
@@ -259,19 +274,17 @@ public class Nodo {
                     1, messageContent);
             salida.broadcastMessage(m);
             if (type.equals("Type1")) {
-                // Network.NB_OF_BLOCK_OF_TYPE1_CRE q
-                // Network.NB_OF_BLOCK_OF_TYPE1_CREATED.get(Network.NB_OF_BLOCK_OF_TYPE1_CREATED.size()
-                // - 1) + 1);
-            } else {
-                // Network.NB_OF_BLOCK_OF_TYPE2_CREATED.add(Network.NB_OF_BLOCK_OF_TYPE2_CREATED.get(Network.NB_OF_BLOCK_OF_TYPE2_CREATED.size()
-                // - 1) + 1);
+                // TODO: Broadcast
+                //Network.NB_OF_BLOCK_OF_TYPE1_CREATED.add(Network.NB_OF_BLOCK_OF_TYPE1_CREATED.get(Network.NB_OF_BLOCK_OF_TYPE1_CREATED.size()-1)+1);
+            }else{
+                // TODO: Broadcast
+                //Network.NB_OF_BLOCK_OF_TYPE2_CREATED.add(Network.NB_OF_BLOCK_OF_TYPE2_CREATED.get(Network.NB_OF_BLOCK_OF_TYPE2_CREATED.size()-1)+1);
             }
-            // System.out.println("Block forged and broadcast successfully by " +
-            // this.name);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error signing");
         }
+        System.out.println("---------------------------------------------------");
     }
 
     public void stake(int amount, String type) {
@@ -289,7 +302,8 @@ public class Nodo {
             this.wallet2 -= amount;
         }
         stakeTime = System.currentTimeMillis();
-        System.out.println(name + " deposit " + amount + " as stake");
+        System.out.println(name + " deposit " + amount + " as stake for " + type);
+        System.out.println();
     }
 
     public void addInvestorType(String investorAddress, double stakeAmount, String type) {
@@ -307,17 +321,15 @@ public class Nodo {
 
     }
 
-    public void actualizarNbTransParType(String transactionType) {
+    public void actualizarNbTransParType(String transactionType, int cantidad) {
         HashMap<String, Integer> nbTransParType = (HashMap<String, Integer>) infoRed.getNbTransParType();
-        infoRed.setNbTransParType(transactionType, nbTransParType.get(transactionType) + 1);
-
-        System.out.println(infoRed.getNbTransParType().get(transactionType));
-
+        infoRed.setNbTransParType(transactionType, nbTransParType.get(transactionType) + cantidad);
     }
 
     public void validate() {
         chooseValidator("Type1");
         chooseValidator("Type2");
+
         // Asignación momentanea:
         // direccionValidadorType1 = "26.20.111.124";
         // direccionValidadorType2 = "26.37.38.157";
@@ -326,7 +338,7 @@ public class Nodo {
 
         if (direccionValidadorType1 != null && direccionValidadorType2 != null) {
             salida.enviarAForjar(direccionValidadorType1, "Type1");
-           // salida.enviarAForjar(direccionValidadorType2, "Type2");
+            salida.enviarAForjar(direccionValidadorType2, "Type2");
             direccionValidadorType1 = null;
             direccionValidadorType2 = null;
         }
@@ -337,7 +349,7 @@ public class Nodo {
     public void chooseValidator(String type) {
         System.out.println("Choosing a validator for a block of type " + type);
         Set<String> listNode = infoRed.getNetwork(); // List of nodes in the network
-        for(String s: listNode){
+        for (String s : listNode) {
             System.out.println("Lista de nodos encontrados: ");
             System.out.println(s);
         }
@@ -345,15 +357,14 @@ public class Nodo {
         for (String direccion : listNode) {
             double stakeAmount;
             if (type.equals("Type1")) {
-                salida.actualizarStakeAmount(direccion, "Type1");
-                // stakeAmount = mapStakeAmount1.get(direccion);
+                stakeAmount = infoRed.getStakeAmount1WhitAdress(direccion);
             } else {
-                // stakeAmount = salida.pedirStakeAmount(direccion,"Type2");
+                stakeAmount = infoRed.getStakeAmount2WhitAdress(direccion);
             }
             // Get LightNode's stakeTime (How long the node have been Staking)
-            salida.actualizarStakeTime(direccion);
-            // double stakeTime = System.currentTimeMillis() - mapStakeTime.get(direccion);;
-            // mapProba.put(direccion, stakeAmount * (stakeTime));
+            double stakeTime = System.currentTimeMillis() - infoRed.getStakeTimeWhitAdress(direccion);
+            ;
+            mapProba.put(direccion, stakeAmount * (stakeTime));
         }
         double sum = mapProba.values().stream().mapToDouble(v -> v).sum();
         int number_of_slots = 0;
@@ -410,7 +421,7 @@ public class Nodo {
     public void setDireccionValidadorType2(String validator2) {
         this.direccionValidadorType2 = validator2;
     }
-    
+
     public PublicKey getPublicKey() {
         return publicKey;
     }
@@ -467,11 +478,11 @@ public class Nodo {
         this.stakeAmount2 = stakeAmount2;
     }
 
-    public double getStakeTime() {
+    public long getStakeTime() {
         return stakeTime;
     }
 
-    public void setStakeTime(double stakeTime) {
+    public void setStakeTime(long stakeTime) {
         this.stakeTime = stakeTime;
     }
 

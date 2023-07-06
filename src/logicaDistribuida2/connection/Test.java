@@ -36,8 +36,7 @@ public class Test {
         
         //Genera transaccion
         nodo.sendMoneyTo(cantidadEnviada, "26.37.38.157", "Type1");
+        nodo.sendMoneyTo(cantidadEnviada, "26.143.218.218", "Type2");
         nodo.validate();//Run de validador ParaL
-        nodo.sendMoneyTo(cantidadEnviada, "26.143.218.218", "Type1");
-        nodo.validate();
     }
 }

@@ -10,7 +10,7 @@ import javax.sound.midi.MidiDevice.Info;
 
 import logicaDistribuida2.blockchain.Block;
 import logicaDistribuida2.blockchain.Blockchain;
-import logicaDistribuida2.messageTypes.ClavePublica;
+import logicaDistribuida2.messageTypes.InfoNodo;
 import logicaDistribuida2.messageTypes.Message;
 import logicaDistribuida2.messageTypes.Transaction;
 import logicaDistribuida2.nodo.InfoRed;
@@ -43,11 +43,12 @@ public class Entrada extends Thread {
                     nodo.receiptMessage(message);
                 }
                 // Claves
-                if (obj instanceof ClavePublica) {
-                    ClavePublica clavePublica = (ClavePublica) obj;
-                    System.out.println("El objeto es una ClavePublica");
+                if (obj instanceof InfoNodo) {
+                    InfoNodo infoNodo = (InfoNodo) obj;
+                    System.out.println("El objeto es un InfoNodo");
                     InfoRed infoRed = nodo.getInfoRed();
-                    infoRed.addNode(clavePublica.getDireccion(), clavePublica.getPublicKey());
+                    infoRed.addNode(infoNodo.getDireccion(), infoNodo.getPublicKey(), infoNodo.getStakeAmount1(),
+                            infoNodo.getStakeAmount2(), infoNodo.getStakeTime());
                 }
                 // InfoRed
                 if (obj instanceof InfoRed) {
@@ -67,11 +68,17 @@ public class Entrada extends Thread {
                         case "ForjaType2":
                             nodo.forgeBlock("Type2");
                             break;
-                        case "NbTransParType1":
-                            nodo.actualizarNbTransParType("Type1");
+                        case "NbTransParType1+":
+                            nodo.actualizarNbTransParType("Type1",1);
                             break;
-                        case "NbTransParType2":
-                            nodo.actualizarNbTransParType("Type2");
+                        case "NbTransParType2+":
+                            nodo.actualizarNbTransParType("Type2",1);
+                            break;
+                        case "NbTransParType1-":
+                            nodo.actualizarNbTransParType("Type1",-1);
+                            break;
+                        case "NbTransParType2-":
+                            nodo.actualizarNbTransParType("Type2",-1);
                             break;
 
                     }
