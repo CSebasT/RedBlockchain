@@ -3,15 +3,16 @@ package logicaDistribuida2.connection;
 import java.io.*;
 import java.net.*;
 import java.security.PublicKey;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import logicaDistribuida2.blockchain.Blockchain;
+import logicaDistribuida2.nodo.InfoRed;
 import logicaDistribuida2.nodo.Nodo;
 import logicaDistribuida2.messageTypes.Transaction;
-import logica.network.ValidatorNode;
+import logicaDistribuida2.messageTypes.ClavePublica;
 import logicaDistribuida2.messageTypes.Message;
 import logicaDistribuida2.blockchain.Block;
 
@@ -27,9 +28,11 @@ public class Salida {
         /* Nodo 1 */
         direcciones.put("26.20.111.124", 12341);
         /* Nodo 2 */
-        direcciones.put("26.92.40.65", 12342);
+        // direcciones.put("26.92.40.65", 12342);
         /* Nodo 3 */
-        // direcciones.put("", 12343));
+        direcciones.put("26.37.38.157", 12343);
+        /* Nodo 4 */
+        direcciones.put("26.143.218.218", 12344);
     }
 
     public void broadcastMessage(Message m) {
@@ -42,8 +45,7 @@ public class Salida {
                 block = (Block) m.getMessageContent().get(0); // copyBlockchainFromFN().getLatestBlock(); TODO: Obtiene
                                                               // el bloque de un full nodo.
                 if (!block.getNodeAddress().equals("Master"))
-                    updateAllWallet(block)
-                    ;
+                    updateAllWallet(block);
             } catch (NullPointerException ignored) {
             }
         }
@@ -110,7 +112,7 @@ public class Salida {
                     investorList = vn.getInvestorList2();
                 }
 
-                double otherNodeReward = takenFromTrans * ValidatorNode.INVEST_RATE;
+                double otherNodeReward = takenFromTrans * Nodo.getINVEST_RATE();
                 double thisNodeReward = takenFromTrans - otherNodeReward;
                 vn.receiptCoin(thisNodeReward, transaction.getTransactionID()); // vn.fullNodeAccount.receiptCoin******
                 for (String s : investorList) {
@@ -144,9 +146,9 @@ public class Salida {
                 System.out.println("Conexion iniciada (mensaje)");
                 ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                 if (type.equals("Type1")) {
-                    out.writeObject("ActBilleteraType1"+amount);
+                    out.writeObject("ActBilleteraType1" + amount);
                 } else {
-                    out.writeObject("ActBilleteraType2"+amount);
+                    out.writeObject("ActBilleteraType2" + amount);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -164,7 +166,7 @@ public class Salida {
         this.puertoEnvio = direcciones.get(fromAddress);
         Socket socket;
         try {
-            socket = new Socket(host, puertoEnvio);
+            socket = new Socket("localhost", puertoEnvio);
             System.out.println("Conexion-s iniciada");
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             String peticion = "DameTuClavePublica";
@@ -210,4 +212,116 @@ public class Salida {
         /* En Entrada hacer que se actualice el mapStakeTime del nodo */
 
     }
+
+    public void buscarInfoRed() {
+        pedirInfoRed();
+        if (miNodo.getInfoRed() == null) {
+            System.out.println("No se pudo copiar un InfoRed");
+            miNodo.setInfoRed(new InfoRed());
+        } else{
+            System.out.println("Copia de InfoRed creada");
+        }
+        broadcastClavePublica(miNodo.getNodeAddress(), miNodo.getPublicKey());
+    }
+
+    private void broadcastClavePublica(String nodeAddress, PublicKey publicKey) {
+        direcciones.forEach((d, p) -> enviarClavePublica(d, p, nodeAddress, publicKey));
+    }
+
+    private void enviarClavePublica(String d, Integer p, String nodeAddress, PublicKey publicKey) {
+        this.host = d;
+        this.puertoEnvio = p;
+        Socket socket;
+        ClavePublica clavePublica = new ClavePublica(nodeAddress, publicKey);
+        System.out.println("Intento de envio a " + host);
+        if (!miNodo.getNodeAddress().equals(host)) {
+            try {
+                socket = new Socket("localhost", puertoEnvio);
+                System.out.println("Conexion iniciada (Envio de clave publica)");
+                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+                out.writeObject(clavePublica);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            InfoRed infoRed = miNodo.getInfoRed();
+            infoRed.addNode(nodeAddress, publicKey);
+        }
+    }
+
+    private void pedirInfoRed() {
+        Iterator iterator = direcciones.entrySet().iterator();
+        while (miNodo.getInfoRed() == null && iterator.hasNext()) {
+            Map.Entry entry = (Map.Entry) iterator.next();
+            this.host = (String) entry.getKey();
+            this.puertoEnvio = (int) entry.getValue();
+            Socket socket;
+            System.out.println("Intento de peticion a " + host);
+            if (!miNodo.getNodeAddress().equals(host)) {
+                try {
+                    socket = new Socket("localhost", puertoEnvio);
+                    System.out.println("Conexion iniciada (petición InfoRed)");
+                    ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+                    out.writeObject("InfoRed" + miNodo.getNodeAddress());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                continue;
+            }
+            try {
+                Thread.sleep(3 * 1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void enviarInfoRed(InfoRed infoRed, String direccion) {
+        this.host = direccion;
+        this.puertoEnvio = direcciones.get(direccion);
+        Socket socket;
+        System.out.println("Intento de envio a " + host);
+        if (!miNodo.getNodeAddress().equals(host)) {
+                try {
+                socket = new Socket("localhost", puertoEnvio);
+                System.out.println("Conexion iniciada (Envio de copia InfoRed)");
+                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+                out.writeObject(infoRed);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+
+        }
+    }
+
+    public void broadcastNbTransParType(String transactionType) {
+        System.out.println("Envio de actualizacion NbTransParType");
+        direcciones.forEach((d, p) -> enviarActualizacionNbTransParType(d, p, transactionType));
+    }
+
+    private void enviarActualizacionNbTransParType(String d, Integer p, String transactionType) {
+        this.host = d;
+        this.puertoEnvio = p;
+        Socket socket;
+        System.out.println("Intento de actualización NbTransParType en " + host);
+        if (!miNodo.getNodeAddress().equals(host)) {
+            try {
+                socket = new Socket("localhost", puertoEnvio);
+                System.out.println("Conexion iniciada (Envio de actualización)");
+                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+                if (transactionType.equals("Type1")) {
+                    out.writeObject("NbTransParType1");
+                } else{
+                    out.writeObject("NbTransParType2");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            miNodo.actualizarNbTransParType(transactionType);
+        }
+    }
+
 }

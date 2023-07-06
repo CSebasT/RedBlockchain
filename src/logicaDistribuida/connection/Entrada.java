@@ -54,7 +54,7 @@ public class Entrada extends Thread {
                     if (peticion.length() >= 17) {
                         switch (peticion.substring(0, 17)) {
                             case "ActBilleteraType1":
-                            
+
                                 amount = Double.parseDouble(peticion.substring(17));
                                 
                                 nodo.receiptCoin(amount, "Type1");

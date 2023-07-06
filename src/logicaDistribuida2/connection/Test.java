@@ -1,24 +1,26 @@
 package logicaDistribuida2.connection;
 
 import java.io.IOException;
-import logicaDistribuida.nodo.Nodo;
+import java.security.KeyPair;
+
+import logicaDistribuida2.nodo.Nodo;
+import logicaDistribuida2.utils.RsaUtil;
 
 public class Test {
     
     public static void main(String[] args) throws IOException {
-        //A donde se va a enviar
-        String host = "26.92.40.65";
         int puertoRecepcion = 12341;
-        /*
-         * Enviar a Jorge
-         * String host = "26.92.40.65";
-         * int puertoEnvio = 12346;
-         * int puertoRecepcion = 12345;
-         */
+        
+        KeyPair keys = null;
+        try {
+            keys = RsaUtil.generateKeyPair();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // Mi nodo 
         // La dirección en "logica" se obtiene de un hash a la clave publica
-        Nodo nodo = new Nodo(1, "26.20.111.124");
+        Nodo nodo = new Nodo(1, "26.20.111.124", keys);
         // Poner el stake
         nodo.stake(20, "Type1");
         nodo.stake(10, "Type2");
@@ -29,11 +31,13 @@ public class Test {
         //Hilo para escuchar
         Entrada serverThread = new Entrada(nodo, puertoRecepcion);
         serverThread.start();
+
+        nodo.buscarInfoRed();
         
         //Genera transaccion
-        nodo.sendMoneyTo(cantidadEnviada, host, "Type1");
-
-        //Run de validador ParaL
+        nodo.sendMoneyTo(cantidadEnviada, "26.37.38.157", "Type1");
+        nodo.validate();//Run de validador ParaL
+        nodo.sendMoneyTo(cantidadEnviada, "26.143.218.218", "Type1");
         nodo.validate();
     }
 }

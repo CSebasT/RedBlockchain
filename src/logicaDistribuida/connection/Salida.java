@@ -3,15 +3,12 @@ package logicaDistribuida.connection;
 import java.io.*;
 import java.net.*;
 import java.security.PublicKey;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import logicaDistribuida.blockchain.Blockchain;
 import logicaDistribuida.nodo.Nodo;
 import logicaDistribuida.messageTypes.Transaction;
-import logica.network.ValidatorNode;
 import logicaDistribuida.messageTypes.Message;
 import logicaDistribuida.blockchain.Block;
 
@@ -112,7 +109,7 @@ public class Salida {
                     investorList = vn.getInvestorList2();
                 }
 
-                double otherNodeReward = takenFromTrans * ValidatorNode.INVEST_RATE;
+                double otherNodeReward = takenFromTrans * logicaDistribuida2.nodo.Nodo.getINVEST_RATE();
                 double thisNodeReward = takenFromTrans - otherNodeReward;
                 vn.receiptCoin(thisNodeReward, transaction.getTransactionID()); // vn.fullNodeAccount.receiptCoin******
                 for (String s : investorList) {

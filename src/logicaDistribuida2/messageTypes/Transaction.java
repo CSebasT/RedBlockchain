@@ -3,8 +3,8 @@ package logicaDistribuida2.messageTypes;
 import java.io.Serializable;
 import java.security.PrivateKey;
 
-import logica.utils.HashUtil;
-import logica.utils.RsaUtil;
+import logicaDistribuida2.utils.HashUtil;
+import logicaDistribuida2.utils.RsaUtil;
 
 /**
  * Clase Transaction.
